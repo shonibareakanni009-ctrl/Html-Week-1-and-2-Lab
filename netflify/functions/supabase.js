@@ -1,7 +1,3 @@
-// netlify/functions/supabase.js
-// Secure proxy — uses Netlify's auto-set Supabase variable names.
-// SUPABASE_DATABASE_URL  = your Supabase project URL
-// SUPABASE_ANON_KEY      = your Supabase anon/public key
 
 exports.handler = async (event) => {
   const SUPABASE_URL = process.env.SUPABASE_DATABASE_URL || process.env.SUPABASE_URL;

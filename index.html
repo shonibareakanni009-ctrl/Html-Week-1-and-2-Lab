@@ -22,7 +22,7 @@
     html{height:100%;-webkit-text-size-adjust:100%;}
     body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);height:100%;overflow:hidden;}
 
-    /* ── TOPBAR ── */
+
     .topbar{height:var(--nav-h);background:var(--s1);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 14px;gap:10px;position:sticky;top:0;z-index:80;flex-shrink:0;}
     .logo{font-family:'Space Mono',monospace;font-weight:700;font-size:14px;background:linear-gradient(90deg,var(--a3),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;flex-shrink:0;}
     .week-tabs{display:flex;gap:3px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:3px;flex-shrink:0;}
@@ -41,7 +41,7 @@
     .btn-setup{background:transparent;border:1px solid var(--bd);color:var(--muted2);padding:4px 10px;border-radius:6px;font-size:11px;font-family:'Space Grotesk',sans-serif;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s;}
     .btn-setup:hover{border-color:var(--a1);color:var(--a1);}
 
-    /* ── DESKTOP LAYOUT ── */
+
     .app{display:grid;grid-template-columns:230px 1fr;height:calc(100dvh - var(--nav-h));overflow:hidden;}
     .sidebar{background:var(--s1);border-right:1px solid var(--bd);overflow-y:auto;display:flex;flex-direction:column;}
     .sidebar-week{padding:10px 12px 4px;}
@@ -87,7 +87,7 @@
     .cl{margin-bottom:2px;}
     .cl-info{color:var(--a3);} .cl-ok{color:var(--green);} .cl-fail{color:var(--red);} .cl-warn{color:var(--yellow);} .cl-muted{color:var(--muted);}
 
-    /* ── INSTRUCTION CONTENT ── */
+
     .ch-meta{display:flex;align-items:center;gap:7px;margin-bottom:12px;flex-wrap:wrap;}
     .tag-pill{font-size:10px;font-family:'Space Mono',monospace;font-weight:700;padding:3px 8px;border-radius:4px;}
     .tag-w1{background:#f9731620;color:var(--w1);} .tag-w2{background:#3b82f620;color:var(--w2);} .tag-xp{background:#eab30820;color:var(--yellow);}
@@ -105,38 +105,38 @@
     .task-row:last-child{border-bottom:none;}
     .task-num{width:22px;height:22px;border-radius:50%;background:var(--a1);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:"Space Mono",monospace;font-weight:700;flex-shrink:0;margin-top:1px;}
 
-    /* ── MOBILE NAV ── */
+
     .mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:var(--bot-h);background:var(--s1);border-top:1px solid var(--bd);z-index:90;padding-bottom:env(safe-area-inset-bottom,0px);}
     .mnav-inner{display:grid;grid-template-columns:repeat(5,1fr);height:100%;}
     .mnav-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;color:var(--muted);font-size:9px;font-family:'Space Grotesk',sans-serif;font-weight:600;touch-action:manipulation;transition:color .15s;padding:4px 0;}
     .mnav-btn .mni{font-size:19px;line-height:1;}
     .mnav-btn.active{color:var(--a1);}
 
-    /* ── MOBILE PANELS ── */
+
     .mobile-panels{display:none;position:fixed;top:var(--nav-h);left:0;right:0;bottom:var(--bot-h);overflow:hidden;}
     .mp{display:none;flex-direction:column;position:absolute;inset:0;overflow:hidden;background:var(--bg);}
     .mp.vis{display:flex;}
 
-    /* Mobile challenge list */
+
     .m-ch-list{overflow-y:auto;padding:8px 12px 16px;-webkit-overflow-scrolling:touch;flex:1;}
     .m-filter-bar{padding:8px 12px;background:var(--s1);border-bottom:1px solid var(--bd);display:flex;gap:4px;flex-shrink:0;}
     .m-filter-bar .week-tab{flex:1;text-align:center;padding:6px 4px;}
 
-    /* Mobile editor */
+
     .m-editor-actions{background:var(--s1);border-bottom:1px solid var(--bd);padding:8px 12px;gap:8px;display:flex;flex-shrink:0;}
     .m-editor-actions .btn{flex:1;padding:11px 6px;font-size:13px;text-align:center;}
 
-    /* Mobile output tabs */
+
     .out-tabs{display:flex;background:var(--s1);border-bottom:1px solid var(--bd);flex-shrink:0;}
     .out-tab{flex:1;padding:10px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;color:var(--muted);border:none;background:none;font-family:'Space Grotesk',sans-serif;border-bottom:2px solid transparent;transition:all .15s;}
     .out-tab.active{color:var(--a1);border-bottom-color:var(--a1);}
     .out-pane{display:none;flex:1;overflow:hidden;flex-direction:column;}
     .out-pane.vis{display:flex;}
 
-    /* Mobile progress panel */
+
     .m-progress-panel{overflow-y:auto;padding:16px;flex:1;-webkit-overflow-scrolling:touch;}
 
-    /* ── TOAST ── */
+
     .toast{position:fixed;bottom:72px;right:14px;background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:12px 15px;max-width:min(310px,calc(100vw - 28px));z-index:999;transform:translateY(16px);opacity:0;transition:all .3s ease;pointer-events:none;box-shadow:0 10px 30px #000a;}
     .toast.show{transform:translateY(0);opacity:1;}
     .toast.ok{border-color:var(--green);} .toast.err{border-color:var(--red);}
@@ -144,7 +144,7 @@
     .toast.ok .toast-title{color:var(--green);} .toast.err .toast-title{color:var(--red);}
     .toast-body{font-size:12px;color:var(--muted2);line-height:1.5;}
 
-    /* ── MODAL ── */
+
     .overlay{position:fixed;inset:0;background:#000c;backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center;padding:14px;}
     .overlay.hidden{display:none;}
     .modal{background:var(--s1);border:1px solid var(--bd);border-radius:14px;width:100%;max-width:600px;max-height:90dvh;overflow-y:auto;padding:22px;box-shadow:0 24px 60px #000;-webkit-overflow-scrolling:touch;}
@@ -169,7 +169,7 @@
     .save-btn{background:linear-gradient(135deg,var(--a2),var(--a1));border:none;color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:11px 20px;border-radius:8px;cursor:pointer;width:100%;transition:opacity .15s;}
     .save-btn:hover{opacity:.85;}
 
-    /* ── COMPLETION ── */
+
     .completion{position:fixed;inset:0;background:var(--bg);z-index:300;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;}
     .completion.show{display:flex;}
     .comp-emoji{font-size:64px;margin-bottom:12px;animation:float 1.2s ease-in-out infinite alternate;}
@@ -183,14 +183,14 @@
     ::-webkit-scrollbar-track{background:transparent;}
     ::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px;}
 
-    /* ── TABLET ── */
+
     @media(max-width:960px) and (min-width:641px){
       .app{grid-template-columns:200px 1fr;}
       .editor-area{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) minmax(0,1fr);}
       .instructions{border-right:none;border-bottom:1px solid var(--bd);}
       .main{grid-template-rows:1fr 150px;}
     }
-    /* ── MOBILE ── */
+
     @media(max-width:640px){
       .app{display:none!important;}
       .mobile-nav,.mobile-panels{display:block;}
@@ -203,7 +203,6 @@
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">&lt;HTMLab/&gt;</div>
   <div class="week-tabs">
@@ -221,7 +220,6 @@
   <a href="teacher.html" style="background:transparent;border:1px solid var(--bd);color:var(--muted2);padding:4px 10px;border-radius:6px;font-size:11px;font-family:Space Grotesk,sans-serif;font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none;" target="_blank">📊 Dashboard</a><button class="btn-setup" onclick="openSetup()">⚙ Setup</button>
 </div>
 
-<!-- DESKTOP APP -->
 <div class="app">
   <div class="sidebar">
     <div id="sidebarContent"></div>
@@ -261,10 +259,8 @@
   </div>
 </div>
 
-<!-- MOBILE PANELS -->
 <div class="mobile-panels" id="mobilePanels">
 
-  <!-- Challenges -->
   <div class="mp vis" id="mpA">
     <div class="m-filter-bar">
       <button class="week-tab" id="mTabW1"  onclick="filterWeek(1)">Week 1</button>
@@ -274,12 +270,10 @@
     <div class="m-ch-list" id="mChallengeList"></div>
   </div>
 
-  <!-- Instructions -->
   <div class="mp" id="mpB">
     <div style="overflow-y:auto;flex:1;padding:16px;-webkit-overflow-scrolling:touch;" id="mInstructions"></div>
   </div>
 
-  <!-- Editor -->
   <div class="mp" id="mpC">
     <div class="m-editor-actions">
       <button class="btn btn-reset" onclick="resetCode()">↺</button>
@@ -289,7 +283,6 @@
     <textarea id="editorM" class="code-ta" spellcheck="false" placeholder="Write your HTML here..."></textarea>
   </div>
 
-  <!-- Output -->
   <div class="mp" id="mpD">
     <div style="display:flex;flex-direction:column;height:100%;">
       <div class="out-tabs">
@@ -303,7 +296,6 @@
     </div>
   </div>
 
-  <!-- Progress -->
   <div class="mp" id="mpE">
     <div class="m-progress-panel">
       <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:var(--muted2);">Your Progress</div>
@@ -325,7 +317,6 @@
   </div>
 </div>
 
-<!-- MOBILE BOTTOM NAV -->
 <div class="mobile-nav">
   <div class="mnav-inner">
     <button class="mnav-btn active" id="mnA" onclick="goPanel('A')"><span class="mni">📚</span><span>Lessons</span></button>
@@ -336,13 +327,11 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast">
   <div class="toast-title" id="toastTitle"></div>
   <div class="toast-body"  id="toastBody"></div>
 </div>
 
-<!-- SETUP MODAL -->
 <div class="overlay hidden" id="overlay">
   <div class="modal">
     <div class="modal-head">
@@ -401,7 +390,6 @@ SUPABASE_ANON_KEY = eyJhbGci...</div>
   </div>
 </div>
 
-<!-- COMPLETION -->
 <div class="completion" id="completion">
   <div class="comp-emoji">🏆</div>
   <div class="comp-title">Lab Complete!</div>
@@ -411,12 +399,8 @@ SUPABASE_ANON_KEY = eyJhbGci...</div>
 </div>
 
 <script>
-// ══════════════════════════════════════
-// DATA
-// ══════════════════════════════════════
 const CHALLENGES=[
 
-// ─── WEEK 1 ───────────────────────────────────────────────────────────────
 
 {id:"w1c1",week:1,xp:40,label:"What is HTML?",
 title:"What is HTML?",
@@ -515,7 +499,6 @@ checks:[
   {test:c=>/HTML/i.test(c)&&/CSS/i.test(c),msg:"✓ Both HTML and CSS are mentioned in the page"}
 ]},
 
-// ─── WEEK 2 ───────────────────────────────────────────────────────────────
 
 {id:"w2c1",week:2,xp:50,label:"DOCTYPE",
 title:"The DOCTYPE Declaration",
@@ -750,9 +733,6 @@ checks:[
 
 ];
 
-// ══════════════════════════════════════
-// STATE
-// ══════════════════════════════════════
 let cur=0, completed=new Set(), xp=0, studentId=null, wf=0;
 const PROXY='/.netlify/functions/supabase';
 const saved=(()=>{try{return JSON.parse(localStorage.getItem('htmlab_v4')||'{}')}catch{return{}}})();
@@ -768,9 +748,6 @@ if(saved.studentId){
 function persist(){localStorage.setItem('htmlab_v4',JSON.stringify({completed:[...completed],xp,studentId}));}
 function setStudentDisplay(v){['studentDisplay','mStudentDisplay'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=v;});}
 
-// ══════════════════════════════════════
-// MOBILE PANELS
-// ══════════════════════════════════════
 function goPanel(key){
   'ABCDE'.split('').forEach(k=>{
     document.getElementById('mp'+k).classList.remove('vis');
@@ -778,7 +755,6 @@ function goPanel(key){
   });
   document.getElementById('mp'+key).classList.add('vis');
   document.getElementById('mn'+key).classList.add('active');
-  // Sync code editors when opening editor panel
   if(key==='C') document.getElementById('editorM').value=document.getElementById('editor').value;
 }
 
@@ -791,9 +767,6 @@ function switchOut(key){
   document.getElementById('out'+key).classList.add('vis');
 }
 
-// ══════════════════════════════════════
-// SUPABASE
-// ══════════════════════════════════════
 async function dbCall(path,method,body,params){
   try{
     const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path,method,body,params})});
@@ -831,9 +804,6 @@ async function connectStudent(){
   }
 }
 
-// ══════════════════════════════════════
-// WEEK FILTER
-// ══════════════════════════════════════
 function filterWeek(w){
   wf=w;
   ['W1','W2','All'].forEach(s=>{
@@ -848,9 +818,6 @@ function filterWeek(w){
   if(!vis.find(c=>c.id===CHALLENGES[cur].id))loadChallenge(CHALLENGES.indexOf(vis[0]));
 }
 
-// ══════════════════════════════════════
-// RENDER
-// ══════════════════════════════════════
 function renderSidebar(){
   let h='';
   [1,2].forEach(w=>{
@@ -916,9 +883,6 @@ function setXP(v){
   document.getElementById('mXpCount').textContent=v;
 }
 
-// ══════════════════════════════════════
-// EDITOR — sync mobile ↔ desktop
-// ══════════════════════════════════════
 const edD=document.getElementById('editor'), edM=document.getElementById('editorM');
 edD.addEventListener('input',()=>edM.value=edD.value);
 edM.addEventListener('input',()=>edD.value=edM.value);
@@ -958,9 +922,6 @@ async function checkCode(){
   }
 }
 
-// ══════════════════════════════════════
-// CONSOLE
-// ══════════════════════════════════════
 function clog(type,msg){
   ['consoleD','consoleM'].forEach(id=>{
     const el=document.createElement('div');
@@ -970,9 +931,6 @@ function clog(type,msg){
 }
 function clearConsole(){['consoleD','consoleM'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML='';});}
 
-// ══════════════════════════════════════
-// TOAST
-// ══════════════════════════════════════
 let _tt;
 function showToast(type,title,body){
   const t=document.getElementById('toast');
@@ -982,15 +940,9 @@ function showToast(type,title,body){
   clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),4000);
 }
 
-// ══════════════════════════════════════
-// MODAL
-// ══════════════════════════════════════
 function openSetup(){document.getElementById('overlay').classList.remove('hidden');}
 function closeSetup(){document.getElementById('overlay').classList.add('hidden');}
 
-// ══════════════════════════════════════
-// KEYBOARD
-// ══════════════════════════════════════
 [edD,edM].forEach(ta=>{
   ta.addEventListener('keydown',e=>{
     if(e.key==='Tab'){e.preventDefault();const s=ta.selectionStart,en=ta.selectionEnd;ta.value=ta.value.slice(0,s)+'  '+ta.value.slice(en);ta.selectionStart=ta.selectionEnd=s+2;}
@@ -999,9 +951,6 @@ function closeSetup(){document.getElementById('overlay').classList.add('hidden')
   });
 });
 
-// ══════════════════════════════════════
-// INIT
-// ══════════════════════════════════════
 filterWeek(0);
 loadChallenge(0);
 updateProgress();
