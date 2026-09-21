@@ -335,61 +335,24 @@
 <div class="overlay hidden" id="overlay">
   <div class="modal">
     <div class="modal-head">
-      <h2>⚙ Supabase + Netlify Setup</h2>
+      <h2>Student sign in</h2>
       <button class="modal-close" onclick="closeSetup()">✕</button>
     </div>
     <div class="step">
-      <div class="step-head"><div class="step-num">1</div><div class="step-title">Create a Supabase Project</div></div>
-      <div class="step-desc">This lab is connected to the resumed Supabase project <code>14 Weeks-Html</code>.</div>
+      <div class="step-head"><div class="step-num">1</div><div class="step-title">Use your class account</div></div>
+      <div class="step-desc">Sign in with the username and password provided by your teacher. Your progress is saved to the class dashboard.</div>
+      <div class="input-label">USERNAME</div>
+      <input class="input-field" id="studentIdInput" autocomplete="username" placeholder="e.g. amina_14" />
+      <div class="input-label">PASSWORD</div>
+      <input class="input-field" id="studentPasswordInput" type="password" autocomplete="current-password" placeholder="Your class password" />
+      <button class="save-btn" onclick="loginStudent()">Sign in</button>
     </div>
     <div class="step">
-      <div class="step-head"><div class="step-num">2</div><div class="step-title">Create the Progress Table</div></div>
-      <div class="step-desc">Supabase → SQL Editor → New Query → run this:</div>
-      <div class="code-snip"><span class="snip-cm">-- Student progress table</span>
-<span class="snip-kw">CREATE TABLE</span> student_progress (
-  id           <span class="snip-fn">uuid</span> <span class="snip-kw">DEFAULT</span> <span class="snip-fn">gen_random_uuid</span>() <span class="snip-kw">PRIMARY KEY</span>,
-  student_id   <span class="snip-fn">text</span> <span class="snip-kw">NOT NULL</span>,
-  challenge    <span class="snip-fn">text</span> <span class="snip-kw">NOT NULL</span>,
-  week         <span class="snip-fn">integer</span>,
-  completed    <span class="snip-fn">boolean</span> <span class="snip-kw">DEFAULT</span> <span class="snip-num">false</span>,
-  xp_earned    <span class="snip-fn">integer</span> <span class="snip-kw">DEFAULT</span> <span class="snip-num">0</span>,
-  code         <span class="snip-fn">text</span>,
-  completed_at <span class="snip-fn">timestamptz</span>,
-  created_at   <span class="snip-fn">timestamptz</span> <span class="snip-kw">DEFAULT</span> <span class="snip-fn">now</span>(),
-  <span class="snip-kw">UNIQUE</span>(student_id, challenge)
-);
-<span class="snip-kw">ALTER TABLE</span> student_progress <span class="snip-kw">ENABLE ROW LEVEL SECURITY</span>;
-<span class="snip-kw">CREATE POLICY</span> <span class="snip-str">"classroom_access"</span> <span class="snip-kw">ON</span> student_progress
-  <span class="snip-kw">FOR ALL USING</span> (<span class="snip-num">true</span>) <span class="snip-kw">WITH CHECK</span> (<span class="snip-num">true</span>);</div>
-    </div>
-    <div class="step">
-      <div class="step-head"><div class="step-num">3</div><div class="step-title">Set Netlify Environment Variables</div></div>
-      <div class="env-note"><strong>⚠ Never paste API keys into this HTML file.</strong><br>Set them in Netlify → Site Settings → Environment Variables. They stay server-side only.</div>
-      <div class="code-snip"><span class="snip-cm"># Netlify → Site Settings → Environment Variables</span>
-SUPABASE_DATABASE_URL = https://xxxx.supabase.co
-SUPABASE_ANON_KEY = eyJhbGci...</div>
-      <div class="step-desc" style="margin-top:8px;">Get both from Supabase → <strong style="color:var(--a3)">Project Settings → API</strong>. The Vercel deployment uses these server-side variables; Netlify Git redeploys are disabled for this project.</div>
-    </div>
-    <div class="step">
-      <div class="step-head"><div class="step-num">4</div><div class="step-title">Enter Your Student ID</div></div>
-      <div class="step-desc">Each student enters their own name or roll number. No API keys needed on the student side — they stay hidden on the server.</div>
-      <div class="input-label">STUDENT_ID</div>
-      <input class="input-field" id="studentIdInput" placeholder="e.g. john_doe or student_14" />
-      <button class="save-btn" onclick="connectStudent()">Save & Connect</button>
-    </div>
-    <div class="step">
-      <div class="step-head"><div class="step-num">5</div><div class="step-title">Teacher Leaderboard</div></div>
-      <div class="code-snip"><span class="snip-kw">SELECT</span> student_id,
-  <span class="snip-fn">COUNT</span>(*) <span class="snip-kw">FILTER</span>(<span class="snip-kw">WHERE</span> completed) <span class="snip-kw">AS</span> done,
-  <span class="snip-fn">SUM</span>(xp_earned) <span class="snip-kw">AS</span> total_xp,
-  <span class="snip-fn">MAX</span>(completed_at) <span class="snip-kw">AS</span> last_seen
-<span class="snip-kw">FROM</span> student_progress
-<span class="snip-kw">GROUP BY</span> student_id
-<span class="snip-kw">ORDER BY</span> total_xp <span class="snip-kw">DESC</span>;</div>
+      <div class="step-head"><div class="step-num">2</div><div class="step-title">Need an account?</div></div>
+      <div class="step-desc">Ask your teacher to create or reset your student account. No Supabase setup is required on this page.</div>
     </div>
   </div>
 </div>
-
 <div class="completion" id="completion">
   <div class="comp-emoji">🏆</div>
   <div class="comp-title">Lab Complete!</div>
@@ -789,19 +752,26 @@ function updateDbStatus(on){
   document.getElementById('dbDot').className='db-dot'+(on?' on':'');
   document.getElementById('dbLabel').textContent=on?'supabase: on':'offline';
 }
-async function connectStudent(){
-  const val=document.getElementById('studentIdInput').value.trim();
-  if(!val){showToast('err','Missing','Please enter a student ID.');return;}
-  studentId=val; setStudentDisplay(val); persist();
-  const test=await dbCall('student_progress','GET',null,{limit:'1'});
-  if(Array.isArray(test)){
-    updateDbStatus(true);
-    showToast('ok','Connected!',`Saving progress for "${studentId}".`);
-    closeSetup(); await loadRemoteProgress();
-  } else {
-    updateDbStatus(false);
-    showToast('err','Cannot reach Supabase','Check SUPABASE_URL + SUPABASE_ANON_KEY in Netlify env vars, then redeploy.');
-  }
+async function authCall(action,email,password){
+  try{
+    const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,email,password})});
+    const data=await r.json().catch(()=>({}));
+    return r.ok ? data : null;
+  }catch{return null;}
+}
+function usernameEmail(username){
+  const clean=username.trim().toLowerCase();
+  return clean.includes('@') ? clean : `${clean}@students.htmlab.local`;
+}
+async function loginStudent(){
+  const username=document.getElementById('studentIdInput').value.trim();
+  const password=document.getElementById('studentPasswordInput').value;
+  if(!username||!password){showToast('err','Missing details','Enter your username and password.');return;}
+  const session=await authCall('signIn',usernameEmail(username),password);
+  if(!session){updateDbStatus(false);showToast('err','Sign-in failed','Check your username and password or ask your teacher to reset the account.');return;}
+  studentId=username; setStudentDisplay(username); persist(); updateDbStatus(true);
+  showToast('ok','Welcome!',`Progress is ready for "${username}".`);
+  closeSetup(); await loadRemoteProgress();
 }
 
 function filterWeek(w){

@@ -22,7 +22,18 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { path, method, body, params } = JSON.parse(event.body || "{}");
+    const payload = JSON.parse(event.body || "{}");
+    if (payload.action === "signIn") {
+      const authRes = await fetch(`${SUPABASE_URL.replace(/\/$/, "")}/auth/v1/token?grant_type=password`, {
+        method: "POST",
+        headers: { apikey: SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ email: payload.email, password: payload.password }),
+      });
+      const authText = await authRes.text();
+      let authData; try { authData = authText ? JSON.parse(authText) : {}; } catch { authData = { error: authText }; }
+      return { statusCode: authRes.status, headers: { ...CORS, "Content-Type": "application/json" }, body: JSON.stringify(authData) };
+    }
+    const { path, method, body, params } = payload;
     if (!path) return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: "Missing: path" }) };
 
     const base = SUPABASE_URL.replace(/\/$/, "");

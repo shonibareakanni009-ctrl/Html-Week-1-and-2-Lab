@@ -13,11 +13,22 @@ module.exports = async function handler(req, res) {
   }
   try {
     const payload = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+    const base = supabaseUrl.replace(/\/$/, '');
+    if (payload.action === 'signIn') {
+      const authResponse = await fetch(`${base}/auth/v1/token?grant_type=password`, {
+        method: 'POST',
+        headers: { apikey: supabaseKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: payload.email, password: payload.password }),
+      });
+      const authText = await authResponse.text();
+      let authData;
+      try { authData = authText ? JSON.parse(authText) : {}; } catch { authData = { error: authText }; }
+      return res.status(authResponse.status).json(authData);
+    }
     const { path, method = 'GET', body, params } = payload;
     if (!path || !/^[a-zA-Z0-9_]+$/.test(path)) {
       return res.status(400).json({ error: 'Invalid or missing path.' });
     }
-    const base = supabaseUrl.replace(/\/$/, '');
     const query = params ? `?${new URLSearchParams(params).toString()}` : '';
     const response = await fetch(`${base}/rest/v1/${path}${query}`, {
       method,
