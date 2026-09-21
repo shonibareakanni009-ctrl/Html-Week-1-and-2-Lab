@@ -23,11 +23,14 @@ exports.handler = async (event) => {
 
   try {
     const payload = JSON.parse(event.body || "{}");
-    if (payload.action === "signIn") {
-      const authRes = await fetch(`${SUPABASE_URL.replace(/\/$/, "")}/auth/v1/token?grant_type=password`, {
+    if (payload.action === "signIn" || payload.action === "signUp") {
+      const authUrl = payload.action === "signIn"
+        ? `${SUPABASE_URL.replace(/\/$/, "")}/auth/v1/token?grant_type=password`
+        : `${SUPABASE_URL.replace(/\/$/, "")}/auth/v1/signup`;
+      const authRes = await fetch(authUrl, {
         method: "POST",
         headers: { apikey: SUPABASE_ANON_KEY, "Content-Type": "application/json" },
-        body: JSON.stringify({ email: payload.email, password: payload.password }),
+        body: JSON.stringify({ email: payload.email, password: payload.password, data: payload.data || {} }),
       });
       const authText = await authRes.text();
       let authData; try { authData = authText ? JSON.parse(authText) : {}; } catch { authData = { error: authText }; }

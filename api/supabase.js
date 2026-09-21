@@ -14,11 +14,14 @@ module.exports = async function handler(req, res) {
   try {
     const payload = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
     const base = supabaseUrl.replace(/\/$/, '');
-    if (payload.action === 'signIn') {
-      const authResponse = await fetch(`${base}/auth/v1/token?grant_type=password`, {
+    if (payload.action === 'signIn' || payload.action === 'signUp') {
+      const authUrl = payload.action === 'signIn'
+        ? `${base}/auth/v1/token?grant_type=password`
+        : `${base}/auth/v1/signup`;
+      const authResponse = await fetch(authUrl, {
         method: 'POST',
         headers: { apikey: supabaseKey, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: payload.email, password: payload.password }),
+        body: JSON.stringify({ email: payload.email, password: payload.password, data: payload.data || {} }),
       });
       const authText = await authResponse.text();
       let authData;

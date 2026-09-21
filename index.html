@@ -146,6 +146,7 @@
 
 
     .overlay{position:fixed;inset:0;background:#000c;backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center;padding:14px;}
+    .hidden{display:none !important;}
     .overlay.hidden{display:none;}
     .modal{background:var(--s1);border:1px solid var(--bd);border-radius:14px;width:100%;max-width:600px;max-height:90dvh;overflow-y:auto;padding:22px;box-shadow:0 24px 60px #000;-webkit-overflow-scrolling:touch;}
     .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
@@ -338,7 +339,7 @@
       <h2>Student sign in</h2>
       <button class="modal-close" onclick="closeSetup()">✕</button>
     </div>
-    <div class="step">
+    <div class="step" id="signInPanel">
       <div class="step-head"><div class="step-num">1</div><div class="step-title">Use your class account</div></div>
       <div class="step-desc">Sign in with the username and password provided by your teacher. Your progress is saved to the class dashboard.</div>
       <div class="input-label">USERNAME</div>
@@ -346,10 +347,23 @@
       <div class="input-label">PASSWORD</div>
       <input class="input-field" id="studentPasswordInput" type="password" autocomplete="current-password" placeholder="Your class password" />
       <button class="save-btn" onclick="loginStudent()">Sign in</button>
+      <button class="btn-refresh" style="width:100%;margin-top:10px;" onclick="showSignup()">Create a student account</button>
+    </div>
+    <div class="step hidden" id="signupPanel">
+      <div class="step-head"><div class="step-num">1</div><div class="step-title">Create your student account</div></div>
+      <div class="step-desc">Choose a username and password. Your username will identify your saved lab progress.</div>
+      <div class="input-label">USERNAME</div>
+      <input class="input-field" id="signupUsername" autocomplete="username" placeholder="e.g. amina_14" />
+      <div class="input-label">PASSWORD</div>
+      <input class="input-field" id="signupPassword" type="password" autocomplete="new-password" placeholder="At least 6 characters" />
+      <div class="input-label">CONFIRM PASSWORD</div>
+      <input class="input-field" id="signupConfirm" type="password" autocomplete="new-password" placeholder="Repeat your password" />
+      <button class="save-btn" onclick="createStudentAccount()">Create account</button>
+      <button class="btn-refresh" style="width:100%;margin-top:10px;" onclick="showSignin()">Back to sign in</button>
     </div>
     <div class="step">
       <div class="step-head"><div class="step-num">2</div><div class="step-title">Need an account?</div></div>
-      <div class="step-desc">Ask your teacher to create or reset your student account. No Supabase setup is required on this page.</div>
+      <div class="step-desc">Use “Create a student account” above. No Supabase setup is required on this page.</div>
     </div>
   </div>
 </div>
@@ -759,6 +773,14 @@ async function authCall(action,email,password){
     return r.ok ? data : null;
   }catch{return null;}
 }
+function showSignup(){
+  document.getElementById('signInPanel').classList.add('hidden');
+  document.getElementById('signupPanel').classList.remove('hidden');
+}
+function showSignin(){
+  document.getElementById('signupPanel').classList.add('hidden');
+  document.getElementById('signInPanel').classList.remove('hidden');
+}
 function usernameEmail(username){
   const clean=username.trim().toLowerCase();
   return clean.includes('@') ? clean : `${clean}@students.htmlab.local`;
@@ -771,6 +793,27 @@ async function loginStudent(){
   if(!session){updateDbStatus(false);showToast('err','Sign-in failed','Check your username and password or ask your teacher to reset the account.');return;}
   studentId=username; setStudentDisplay(username); persist(); updateDbStatus(true);
   showToast('ok','Welcome!',`Progress is ready for "${username}".`);
+  closeSetup(); await loadRemoteProgress();
+}
+async function createStudentAccount(){
+  const username=document.getElementById('signupUsername').value.trim();
+  const password=document.getElementById('signupPassword').value;
+  const confirm=document.getElementById('signupConfirm').value;
+  if(!/^[a-zA-Z0-9_]{3,30}$/.test(username)){
+    showToast('err','Invalid username','Use 3–30 letters, numbers, or underscores.');return;
+  }
+  if(password.length<6){showToast('err','Password too short','Use at least 6 characters.');return;}
+  if(password!==confirm){showToast('err','Passwords do not match','Enter the same password twice.');return;}
+  const result=await authCall('signUp',usernameEmail(username),password);
+  if(!result){showToast('err','Account creation failed','That username may already exist, or the password was rejected.');return;}
+  const session=result.access_token ? result : await authCall('signIn',usernameEmail(username),password);
+  if(!session || !session.access_token){
+    showToast('ok','Account created','Your account was created. Return to sign in to continue.');
+    showSignin();
+    return;
+  }
+  studentId=username; setStudentDisplay(username); persist(); updateDbStatus(true);
+  showToast('ok','Account created!',`Welcome, ${username}.`);
   closeSetup(); await loadRemoteProgress();
 }
 
