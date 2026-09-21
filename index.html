@@ -340,7 +340,7 @@
     </div>
     <div class="step">
       <div class="step-head"><div class="step-num">1</div><div class="step-title">Create a Supabase Project</div></div>
-      <div class="step-desc">Go to <strong style="color:var(--a3)">supabase.com</strong> → Sign up free → New Project → name it <code>html-lab</code>.</div>
+      <div class="step-desc">This lab is connected to the resumed Supabase project <code>14 Weeks-Html</code>.</div>
     </div>
     <div class="step">
       <div class="step-head"><div class="step-num">2</div><div class="step-title">Create the Progress Table</div></div>
@@ -368,7 +368,7 @@
       <div class="code-snip"><span class="snip-cm"># Netlify → Site Settings → Environment Variables</span>
 SUPABASE_DATABASE_URL = https://xxxx.supabase.co
 SUPABASE_ANON_KEY = eyJhbGci...</div>
-      <div class="step-desc" style="margin-top:8px;">Get both from Supabase → <strong style="color:var(--a3)">Project Settings → API</strong>. Then redeploy your Netlify site.</div>
+      <div class="step-desc" style="margin-top:8px;">Get both from Supabase → <strong style="color:var(--a3)">Project Settings → API</strong>. The Vercel deployment uses these server-side variables; Netlify Git redeploys are disabled for this project.</div>
     </div>
     <div class="step">
       <div class="step-head"><div class="step-num">4</div><div class="step-title">Enter Your Student ID</div></div>
@@ -734,7 +734,7 @@ checks:[
 ];
 
 let cur=0, completed=new Set(), xp=0, studentId=null, wf=0;
-const PROXY='/.netlify/functions/supabase';
+const PROXY=location.hostname.endsWith('vercel.app') ? '/api/supabase' : '/.netlify/functions/supabase';
 const saved=(()=>{try{return JSON.parse(localStorage.getItem('htmlab_v4')||'{}')}catch{return{}}})();
 if(saved.completed)completed=new Set(saved.completed);
 if(saved.xp)xp=saved.xp;

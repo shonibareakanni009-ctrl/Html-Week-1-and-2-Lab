@@ -199,7 +199,7 @@
 </div>
 
 <script>
-const PROXY = '/.netlify/functions/supabase';
+const PROXY = location.hostname.endsWith('vercel.app') ? '/api/supabase' : '/.netlify/functions/supabase';
 const TOTAL_CHALLENGES = 12;
 
 const CHALLENGE_META = [
