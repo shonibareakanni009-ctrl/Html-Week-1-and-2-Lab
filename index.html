@@ -753,14 +753,14 @@ const PROXY=location.hostname.endsWith('vercel.app') ? '/api/supabase' : '/.netl
 const saved=(()=>{try{return JSON.parse(localStorage.getItem('htmlab_v4')||'{}')}catch{return{}}})();
 if(saved.completed)completed=new Set(saved.completed);
 if(saved.xp)xp=saved.xp;
-if(saved.studentId){
+if(saved.studentId&&saved.signedIn){
   studentId=saved.studentId;
   setStudentDisplay(studentId);
   document.getElementById('studentIdInput').value=studentId;
   loadRemoteProgress();
 }
 
-function persist(){localStorage.setItem('htmlab_v4',JSON.stringify({completed:[...completed],xp,studentId}));}
+function persist(){localStorage.setItem('htmlab_v4',JSON.stringify({completed:[...completed],xp,studentId,signedIn:Boolean(studentId)}));}
 function setStudentDisplay(v){['studentDisplay','mStudentDisplay'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=v;});}
 
 function goPanel(key){
@@ -798,7 +798,11 @@ async function loadRemoteProgress(){
 }
 async function saveProgress(id,code,xpE,week){
   if(!studentId)return;
-  await dbCall('student_progress','POST',{student_id:studentId,challenge:id,week,completed:true,xp_earned:xpE,code,attempts:1,completed_at:new Date().toISOString()});
+  const saved=await dbCall('student_progress','POST',{student_id:studentId,challenge:id,week,completed:true,xp_earned:xpE,code,completed_at:new Date().toISOString()});
+  if(!Array.isArray(saved)){
+    updateDbStatus(false);
+    showToast('err','Progress not saved','The teacher dashboard could not receive this completion. Please try again.');
+  }
 }
 function updateDbStatus(on){
   document.getElementById('dbDot').className='db-dot'+(on?' on':'');
@@ -1039,7 +1043,7 @@ filterWeek(0);
 loadChallenge(0);
 updateProgress();
 setXP(xp);
-setTimeout(openSetup,120);
+setTimeout(()=>{if(!saved.studentId||!saved.signedIn)openSetup();},120);
 </script>
 </body>
 </html>
