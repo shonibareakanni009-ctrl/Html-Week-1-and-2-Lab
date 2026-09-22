@@ -15,13 +15,11 @@ module.exports = async function handler(req, res) {
     const payload = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
     const base = supabaseUrl.replace(/\/$/, '');
     if (payload.action === 'signIn' || payload.action === 'signUp') {
-      const authUrl = payload.action === 'signIn'
-        ? `${base}/auth/v1/token?grant_type=password`
-        : `${base}/auth/v1/signup`;
-      const authResponse = await fetch(authUrl, {
+      const rpc = payload.action === 'signIn' ? 'authenticate_student' : 'register_student';
+      const authResponse = await fetch(`${base}/rest/v1/rpc/${rpc}`, {
         method: 'POST',
-        headers: { apikey: supabaseKey, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: payload.email, password: payload.password, data: payload.data || {} }),
+        headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p_username: payload.username, p_password: payload.password }),
       });
       const authText = await authResponse.text();
       let authData;

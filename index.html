@@ -804,9 +804,9 @@ function updateDbStatus(on){
   document.getElementById('dbDot').className='db-dot'+(on?' on':'');
   document.getElementById('dbLabel').textContent=on?'supabase: on':'offline';
 }
-async function authCall(action,email,password){
+async function authCall(action,username,password){
   try{
-    const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,email,password})});
+    const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,username,password})});
     const data=await r.json().catch(()=>({}));
     return {ok:r.ok,data};
   }catch(error){return {ok:false,data:{message:error.message}};}
@@ -814,6 +814,10 @@ async function authCall(action,email,password){
 function authErrorMessage(data){
   const raw=String(data?.msg||data?.message||data?.error_description||data?.error||'');
   const lower=raw.toLowerCase();
+  if(lower.includes('username_taken'))return 'That username is already registered. Try another username or sign in.';
+  if(lower.includes('invalid_credentials'))return 'The username or password is incorrect.';
+  if(lower.includes('invalid_username'))return 'Use 3–30 letters, numbers, or underscores for your username.';
+  if(lower.includes('weak_password'))return 'Use a stronger password with at least 6 characters.';
   if(lower.includes('already registered')||lower.includes('already exists'))return 'That username is already registered. Try another username or sign in.';
   if(lower.includes('password')&&(lower.includes('weak')||lower.includes('at least')||lower.includes('short')))return 'Use a stronger password with at least 6 characters.';
   if(lower.includes('invalid email')||lower.includes('email address'))return 'The username format was rejected. Use only letters, numbers, and underscores.';
@@ -832,16 +836,12 @@ function showSignin(){
   document.getElementById('signupTab').classList.remove('active');
   document.getElementById('signinTab').classList.add('active');
 }
-function usernameEmail(username){
-  const clean=username.trim().toLowerCase();
-  return clean.includes('@') ? clean : `${clean}@students.htmlab.com`;
-}
 async function loginStudent(){
   const username=document.getElementById('studentIdInput').value.trim();
   const password=document.getElementById('studentPasswordInput').value;
   if(!username||!password){showToast('err','Missing details','Enter your username and password.');return;}
-  const result=await authCall('signIn',usernameEmail(username),password),session=result.data;
-  if(!result.ok||!session?.access_token){updateDbStatus(false);showToast('err','Sign-in failed',authErrorMessage(session));return;}
+  const result=await authCall('signIn',username,password),session=result.data;
+  if(!result.ok||!session?.ok){updateDbStatus(false);showToast('err','Sign-in failed',authErrorMessage(session));return;}
   studentId=username; setStudentDisplay(username); persist(); updateDbStatus(true);
   showToast('ok','Welcome!',`Progress is ready for "${username}".`);
   closeSetup(); await loadRemoteProgress();
@@ -855,14 +855,8 @@ async function createStudentAccount(){
   }
   if(password.length<6){showToast('err','Password too short','Use at least 6 characters.');return;}
   if(password!==confirm){showToast('err','Passwords do not match','Enter the same password twice.');return;}
-  const result=await authCall('signUp',usernameEmail(username),password);
-  if(!result.ok){showToast('err','Account creation failed',authErrorMessage(result.data));return;}
-  const session=result.data?.access_token ? result.data : (await authCall('signIn',usernameEmail(username),password)).data;
-  if(!session?.access_token){
-    showToast('ok','Account created','Your account was created. If confirmation is enabled, ask the teacher to disable it, then sign in.');
-    showSignin();
-    return;
-  }
+  const result=await authCall('signUp',username,password),session=result.data;
+  if(!result.ok||!session?.ok){showToast('err','Account creation failed',authErrorMessage(session));return;}
   studentId=username; setStudentDisplay(username); persist(); updateDbStatus(true);
   showToast('ok','Account created!',`Welcome, ${username}.`);
   closeSetup(); await loadRemoteProgress();

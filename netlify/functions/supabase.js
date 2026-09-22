@@ -24,13 +24,11 @@ exports.handler = async (event) => {
   try {
     const payload = JSON.parse(event.body || "{}");
     if (payload.action === "signIn" || payload.action === "signUp") {
-      const authUrl = payload.action === "signIn"
-        ? `${SUPABASE_URL.replace(/\/$/, "")}/auth/v1/token?grant_type=password`
-        : `${SUPABASE_URL.replace(/\/$/, "")}/auth/v1/signup`;
-      const authRes = await fetch(authUrl, {
+      const rpc = payload.action === "signIn" ? "authenticate_student" : "register_student";
+      const authRes = await fetch(`${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/rpc/${rpc}`, {
         method: "POST",
-        headers: { apikey: SUPABASE_ANON_KEY, "Content-Type": "application/json" },
-        body: JSON.stringify({ email: payload.email, password: payload.password, data: payload.data || {} }),
+        headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ p_username: payload.username, p_password: payload.password }),
       });
       const authText = await authRes.text();
       let authData; try { authData = authText ? JSON.parse(authText) : {}; } catch { authData = { error: authText }; }
