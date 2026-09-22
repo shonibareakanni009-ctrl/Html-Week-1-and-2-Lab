@@ -799,8 +799,17 @@ async function authCall(action,email,password){
   try{
     const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,email,password})});
     const data=await r.json().catch(()=>({}));
-    return r.ok ? data : null;
-  }catch{return null;}
+    return {ok:r.ok,data};
+  }catch(error){return {ok:false,data:{message:error.message}};}
+}
+function authErrorMessage(data){
+  const raw=String(data?.msg||data?.message||data?.error_description||data?.error||'');
+  const lower=raw.toLowerCase();
+  if(lower.includes('already registered')||lower.includes('already exists'))return 'That username is already registered. Try another username or sign in.';
+  if(lower.includes('password')&&(lower.includes('weak')||lower.includes('at least')||lower.includes('short')))return 'Use a stronger password with at least 6 characters.';
+  if(lower.includes('invalid email')||lower.includes('email address'))return 'The username format was rejected. Use only letters, numbers, and underscores.';
+  if(lower.includes('confirm')||lower.includes('verify'))return 'The account was created, but email confirmation is enabled. Ask the teacher to disable Confirm email in Supabase Auth settings.';
+  return raw||'The account could not be created. Please try again.';
 }
 function showSignup(){
   document.getElementById('signInPanel').classList.add('hidden');
@@ -812,14 +821,14 @@ function showSignin(){
 }
 function usernameEmail(username){
   const clean=username.trim().toLowerCase();
-  return clean.includes('@') ? clean : `${clean}@students.htmlab.local`;
+  return clean.includes('@') ? clean : `${clean}@students.htmlab.com`;
 }
 async function loginStudent(){
   const username=document.getElementById('studentIdInput').value.trim();
   const password=document.getElementById('studentPasswordInput').value;
   if(!username||!password){showToast('err','Missing details','Enter your username and password.');return;}
-  const session=await authCall('signIn',usernameEmail(username),password);
-  if(!session){updateDbStatus(false);showToast('err','Sign-in failed','Check your username and password or ask your teacher to reset the account.');return;}
+  const result=await authCall('signIn',usernameEmail(username),password),session=result.data;
+  if(!result.ok||!session?.access_token){updateDbStatus(false);showToast('err','Sign-in failed',authErrorMessage(session));return;}
   studentId=username; setStudentDisplay(username); persist(); updateDbStatus(true);
   showToast('ok','Welcome!',`Progress is ready for "${username}".`);
   closeSetup(); await loadRemoteProgress();
@@ -834,10 +843,10 @@ async function createStudentAccount(){
   if(password.length<6){showToast('err','Password too short','Use at least 6 characters.');return;}
   if(password!==confirm){showToast('err','Passwords do not match','Enter the same password twice.');return;}
   const result=await authCall('signUp',usernameEmail(username),password);
-  if(!result){showToast('err','Account creation failed','That username may already exist, or the password was rejected.');return;}
-  const session=result.access_token ? result : await authCall('signIn',usernameEmail(username),password);
-  if(!session || !session.access_token){
-    showToast('ok','Account created','Your account was created. Return to sign in to continue.');
+  if(!result.ok){showToast('err','Account creation failed',authErrorMessage(result.data));return;}
+  const session=result.data?.access_token ? result.data : (await authCall('signIn',usernameEmail(username),password)).data;
+  if(!session?.access_token){
+    showToast('ok','Account created','Your account was created. If confirmation is enabled, ask the teacher to disable it, then sign in.');
     showSignin();
     return;
   }
