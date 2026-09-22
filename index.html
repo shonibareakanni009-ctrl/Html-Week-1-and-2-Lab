@@ -163,8 +163,18 @@
     .hidden{display:none !important;}
     .overlay.hidden{display:none;}
     .modal{background:var(--s1);border:1px solid var(--bd);border-radius:14px;width:100%;max-width:600px;max-height:90dvh;overflow-y:auto;padding:22px;box-shadow:0 24px 60px #000;-webkit-overflow-scrolling:touch;}
-    .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+    .modal-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;}
     .modal-head h2{font-size:16px;font-weight:700;}
+    .auth-modal{max-width:520px;padding:28px;}
+    .auth-kicker{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--a3);margin-bottom:8px;}
+    .auth-modal h2{font-size:24px;letter-spacing:-.5px;}
+    .auth-subtitle{color:var(--muted2);font-size:12px;margin-top:6px;line-height:1.5;max-width:360px;}
+    .auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--bg);padding:4px;border:1px solid var(--bd);border-radius:9px;margin-bottom:4px;}
+    .auth-tab{border:0;border-radius:6px;background:transparent;color:var(--muted);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;padding:10px;cursor:pointer;}
+    .auth-tab.active{background:var(--s3);color:var(--text);box-shadow:0 2px 8px #0004;}
+    .auth-panel{border-bottom:0;padding:18px 0 10px;}
+    .auth-panel-title{font-size:15px;font-weight:700;margin-bottom:6px;}
+    .auth-note{border-top:1px solid var(--bd);padding-top:14px;color:var(--muted);font-size:10px;line-height:1.6;}
     .modal-close{width:28px;height:28px;border-radius:6px;background:none;border:1px solid var(--bd);color:var(--muted);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;}
     .modal-close:hover{border-color:var(--red);color:var(--red);}
     .step{padding:14px 0;border-bottom:1px solid var(--bd);}
@@ -348,23 +358,26 @@
 </div>
 
 <div class="overlay hidden" id="overlay">
-  <div class="modal">
+  <div class="modal auth-modal">
     <div class="modal-head">
-      <h2>Student sign in</h2>
-      <button class="modal-close" onclick="closeSetup()">✕</button>
+      <div><div class="auth-kicker">HTMLAB • WEEK 1 &amp; 2</div><h2>Welcome, learner</h2><div class="auth-subtitle">Sign in to save your work and get help from your AI coach.</div></div>
+      <button class="modal-close" onclick="closeSetup()" aria-label="Close sign-in">✕</button>
     </div>
-    <div class="step" id="signInPanel">
-      <div class="step-head"><div class="step-num">1</div><div class="step-title">Use your class account</div></div>
-      <div class="step-desc">Sign in with the username and password provided by your teacher. Your progress is saved to the class dashboard.</div>
+    <div class="auth-tabs" role="tablist">
+      <button class="auth-tab active" id="signinTab" onclick="showSignin()" role="tab">Sign in</button>
+      <button class="auth-tab" id="signupTab" onclick="showSignup()" role="tab">Create account</button>
+    </div>
+    <div class="step auth-panel" id="signInPanel">
+      <div class="auth-panel-title">Continue your learning</div>
+      <div class="step-desc">Use your student username and password. Your completed challenges and XP will load automatically.</div>
       <div class="input-label">USERNAME</div>
       <input class="input-field" id="studentIdInput" autocomplete="username" placeholder="e.g. amina_14" />
       <div class="input-label">PASSWORD</div>
       <input class="input-field" id="studentPasswordInput" type="password" autocomplete="current-password" placeholder="Your class password" />
       <button class="save-btn" onclick="loginStudent()">Sign in</button>
-      <button class="btn-refresh" style="width:100%;margin-top:10px;" onclick="showSignup()">Create a student account</button>
     </div>
-    <div class="step hidden" id="signupPanel">
-      <div class="step-head"><div class="step-num">1</div><div class="step-title">Create your student account</div></div>
+    <div class="step auth-panel hidden" id="signupPanel">
+      <div class="auth-panel-title">Start a new student account</div>
       <div class="step-desc">Choose a username and password. Your username will identify your saved lab progress.</div>
       <div class="input-label">USERNAME</div>
       <input class="input-field" id="signupUsername" autocomplete="username" placeholder="e.g. amina_14" />
@@ -373,12 +386,8 @@
       <div class="input-label">CONFIRM PASSWORD</div>
       <input class="input-field" id="signupConfirm" type="password" autocomplete="new-password" placeholder="Repeat your password" />
       <button class="save-btn" onclick="createStudentAccount()">Create account</button>
-      <button class="btn-refresh" style="width:100%;margin-top:10px;" onclick="showSignin()">Back to sign in</button>
     </div>
-    <div class="step">
-      <div class="step-head"><div class="step-num">2</div><div class="step-title">Need an account?</div></div>
-      <div class="step-desc">Use “Create a student account” above. No Supabase setup is required on this page.</div>
-    </div>
+    <div class="auth-note">Your password is used only for your student account. Ask your teacher if you need help accessing the class.</div>
   </div>
 </div>
 <button class="ai-fab" id="aiFab" onclick="toggleAiChat()">✦ AI Coach</button>
@@ -814,10 +823,14 @@ function authErrorMessage(data){
 function showSignup(){
   document.getElementById('signInPanel').classList.add('hidden');
   document.getElementById('signupPanel').classList.remove('hidden');
+  document.getElementById('signinTab').classList.remove('active');
+  document.getElementById('signupTab').classList.add('active');
 }
 function showSignin(){
   document.getElementById('signupPanel').classList.add('hidden');
   document.getElementById('signInPanel').classList.remove('hidden');
+  document.getElementById('signupTab').classList.remove('active');
+  document.getElementById('signinTab').classList.add('active');
 }
 function usernameEmail(username){
   const clean=username.trim().toLowerCase();
@@ -1017,7 +1030,7 @@ async function sendAiMessage(){
   }catch(error){appendAiMessage('model',`I couldn't respond right now. ${error.message} Try again in a moment.`);}
   finally{send.disabled=false;send.textContent='Send';input.focus();}
 }
-function openSetup(){document.getElementById('overlay').classList.remove('hidden');}
+function openSetup(){showSignin();document.getElementById('overlay').classList.remove('hidden');}
 function closeSetup(){document.getElementById('overlay').classList.add('hidden');}
 
 [edD,edM].forEach(ta=>{
@@ -1032,6 +1045,7 @@ filterWeek(0);
 loadChallenge(0);
 updateProgress();
 setXP(xp);
+setTimeout(openSetup,120);
 </script>
 </body>
 </html>
