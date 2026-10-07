@@ -24,7 +24,8 @@ module.exports = async function handler(req, res) {
     const { message, challenge, code, history = [] } = typeof req.body === 'string'
       ? JSON.parse(req.body || '{}')
       : (req.body || {});
-    if (!message || typeof message !== 'string') return res.status(400).json({ error: 'A message is required.' });
+    const trimmedMessage = typeof message === 'string' ? message.trim() : '';
+    if (!trimmedMessage) return res.status(400).json({ error: 'A message is required.' });
 
     const safeHistory = Array.isArray(history)
       ? history.slice(-8).map(item => ({ role: item.role === 'model' ? 'model' : 'user', content: String(item.content || '').slice(0, 1200) }))
@@ -33,7 +34,7 @@ module.exports = async function handler(req, res) {
       `Current challenge: ${String(challenge?.title || 'HTML practice').slice(0, 300)}`,
       `Challenge brief: ${String(challenge?.desc || '').slice(0, 1200)}`,
       `Student code:\n${String(code || '(empty)').slice(0, 5000)}`,
-      `Student question: ${message.slice(0, 1600)}`,
+      `Student question: ${trimmedMessage.slice(0, 1600)}`,
       safeHistory.length ? `Recent conversation:\n${safeHistory.map(item => `${item.role}: ${item.content}`).join('\n')}` : '',
     ].filter(Boolean).join('\n\n');
 
